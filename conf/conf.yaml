@@ -1,0 +1,21 @@
+
+redis:
+  addr:     "localhost:6379"
+  password:  ''  # no password set
+  db:       0   #use default DB
+mysql:
+  username: "root"
+  password: "123456"
+  addr: "127.0.0.0:1316"
+  database: "tiktok"
+jwt:
+  token_expire_duration: 240    #hour
+  secret: "天王盖地虎"           #token服务端秘钥
+oss:
+  endpoint: "oss-cn-hangzhou.aliyuncs.com"
+  access_key_id: ""
+  access_key_secret: ""
+  bucket_name: "dyin-app"
+server:
+  port: ":8866"
+
