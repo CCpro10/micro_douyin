@@ -15,11 +15,11 @@ func InitDB() {
 }
 
 var (
-	//Redis相关全局变量
+	// RedisCtx Redis相关全局变量
 	RedisCtx context.Context
 	RedisDB  *redis.Client
 
-	//gorm全局变量
+	// DB gorm全局变量
 	DB *gorm.DB
 )
 
@@ -37,6 +37,7 @@ func initRedis() {
 }
 
 func initMySQL() {
+	// "user:pass@tcp(127.0.0.1:3306)/dbname?charset=utf8mb4&parseTime=True&loc=Local"
 	dsn := conf.Config.MYSQL.Username + ":" +
 		conf.Config.MYSQL.Password + "@tcp(" +
 		conf.Config.MYSQL.Addr + ")/" +
@@ -47,6 +48,15 @@ func initMySQL() {
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
 		//Logger: logger.Default.LogMode(logger.Info),
 	}) //这里用短变量声明会有歧义
+	if err != nil {
+		panic(err)
+	}
+
+	creatDatabase()
+}
+
+func creatDatabase() {
+	err := DB.AutoMigrate(&Comment{}, &Favorite{}, &Follow{}, &User{}, &Video{})
 	if err != nil {
 		panic(err)
 	}

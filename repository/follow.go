@@ -7,12 +7,12 @@ import (
 )
 
 type Follow struct {
-	FollowId   int64 `json:"follow_id" gorm:"primaryKey"`
-	FromUserId int64 `json:"from_user_id"`
-	ToUserId   int64 `json:"to_user_id"`
-	CreateTime int64 `json:"create_time" gorm:"autoCreateTime"`
-	ModifyTime int64 `json:"modify_time" gorm:"autoUpdateTime"`
-	DeleteTime int64 `json:"delete_time"`
+	FollowId   int64 `json:"follow_id" gorm:"primaryKey; bigint unsigned; not null"`
+	FromUserId int64 `json:"from_user_id" gorm:"bigint unsigned; not null"`
+	ToUserId   int64 `json:"to_user_id" gorm:"bigint unsigned; not null"`
+	CreateTime int64 `json:"create_time" gorm:"autoCreateTime; not null"`
+	ModifyTime int64 `json:"modify_time" gorm:"autoUpdateTime; not null"`
+	DeleteTime int64 `json:"delete_time" gorm:"bigint unsigned; not null"`
 }
 
 type IFollowRepository interface {

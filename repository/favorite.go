@@ -6,12 +6,12 @@ import (
 )
 
 type Favorite struct {
-	FavoriteId int64 `json:"favorite_id" gorm:"primaryKey"`
-	UserId     int64 `json:"user_id" gorm:"index"`
-	VideoId    int64 `json:"video_id" gorm:"index"`
-	CreateTime int64 `json:"create_time" gorm:"autoCreateTime;index"`
-	ModifyTime int64 `json:"modify_time" gorm:"autoUpdateTime"`
-	DeleteTime int64 `json:"delete_time"`
+	FavoriteId int64 `json:"favorite_id" gorm:"primaryKey; bigint unsigned; not null"`
+	UserId     int64 `json:"user_id" gorm:"bigint unsigned; not null; uniqueIndex:uid_vid_idx"`
+	VideoId    int64 `json:"video_id" gorm:"bigint unsigned; not null; uniqueIndex:uid_vid_idx"`
+	CreateTime int64 `json:"create_time" gorm:"autoCreateTime; not null"`
+	ModifyTime int64 `json:"modify_time" gorm:"autoUpdateTime; not null"`
+	DeleteTime int64 `json:"delete_time" gorm:"bigint unsigned; not null"`
 }
 
 type IFavoriteRepository interface {

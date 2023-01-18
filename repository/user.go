@@ -6,14 +6,14 @@ import (
 )
 
 type User struct {
-	UserId        int64  `json:"user_id" gorm:"primaryKey"`
-	Username      string `json:"username"`
-	Password      string `json:"password"`
-	FollowCount   int64  `json:"follow_count"`
-	FollowerCount int64  `json:"follower_count"`
-	CreateTime    int64  `json:"create_time" gorm:"autoCreateTime"`
-	ModifyTime    int64  `json:"modify_time" gorm:"autoUpdateTime"`
-	DeleteTime    int64  `json:"delete_time"`
+	UserId        int64  `json:"user_id" gorm:"primaryKey; bigint unsigned; not null"`
+	Username      string `json:"username" gorm:"varchar(40); not null; default: ''; uniqueIndex:username_idx"`
+	Password      string `json:"password" gorm:"varchar(255); not null; default: ''"`
+	FollowCount   int64  `json:"follow_count" gorm:"bigint unsigned; not null; default: 0"`
+	FollowerCount int64  `json:"follower_count" gorm:"bigint unsigned; not null; default: 0"`
+	CreateTime    int64  `json:"create_time" gorm:"autoCreateTime; not null"`
+	ModifyTime    int64  `json:"modify_time" gorm:"autoUpdateTime; not null"`
+	DeleteTime    int64  `json:"delete_time" gorm:"bigint unsigned; not null"`
 }
 
 type IUserRepository interface {

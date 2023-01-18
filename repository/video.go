@@ -6,16 +6,16 @@ import (
 )
 
 type Video struct {
-	VideoId       int64  `json:"video_id" gorm:"primaryKey"`
-	UserId        int64  `json:"user_id" gorm:"index"`
-	PlayUrl       string `json:"play_url"`
-	CoverUrl      string `json:"cover_url"`
-	Title         string `json:"title"`
-	FavoriteCount int64  `json:"favorite_count"`
-	CommentCount  int64  `json:"comment_count"`
-	CreateTime    int64  `json:"create_time" gorm:"autoCreateTime;index"`
-	ModifyTime    int64  `json:"modify_time" gorm:"autoUpdateTime"`
-	DeleteTime    int64  `json:"delete_time"`
+	VideoId       int64  `json:"video_id" gorm:"primaryKey; bigint unsigned; not null"`
+	UserId        int64  `json:"user_id" gorm:"bigint unsigned; not null"`
+	PlayUrl       string `json:"play_url" gorm:"varchar(511); not null; default: '' "`
+	CoverUrl      string `json:"cover_url" gorm:"varchar(511); not null; default: '' "`
+	Title         string `json:"title" gorm:"varchar(255); not null"`
+	FavoriteCount int64  `json:"favorite_count" gorm:"not null"`
+	CommentCount  int64  `json:"comment_count" gorm:"not null"`
+	CreateTime    int64  `json:"create_time" gorm:"autoCreateTime; not null"`
+	ModifyTime    int64  `json:"modify_time" gorm:"autoUpdateTime; not null"`
+	DeleteTime    int64  `json:"delete_time" gorm:"not null"`
 }
 
 type IVideoRepository interface {

@@ -6,14 +6,14 @@ import (
 	"log"
 )
 
-//定义全局配置
+// Config 定义全局配置
 var Config *Conf
 
 func Init(path string) {
 	Config = LoadConfig(path)
 }
 
-//定义全局配置变量
+// Conf 定义全局配置变量
 type Conf struct {
 	Redis struct {
 		Addr     string `yaml:"addr"`
@@ -39,9 +39,10 @@ type Conf struct {
 		AccessKeySecret string `yaml:"access_key_secret"`
 		BucketName      string `yaml:"bucket_name"`
 	}
+	CreateDatabase bool
 }
 
-//获取配置
+// LoadConfig 获取配置
 func LoadConfig(ConfigPath string) *Conf {
 	var c = Conf{}
 	yamlFile, err := ioutil.ReadFile(ConfigPath)
