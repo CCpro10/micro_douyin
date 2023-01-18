@@ -1,4 +1,3 @@
-
 redis:
   addr:     "localhost:6379"
   password:  ''  # no password set
@@ -6,7 +5,7 @@ redis:
 mysql:
   username: "root"
   password: "123456"
-  addr: "127.0.0.0:1316"
+  addr: "127.0.0.1:3306"
   database: "tiktok"
 jwt:
   token_expire_duration: 240    #hour
@@ -18,4 +17,5 @@ oss:
   bucket_name: "dyin-app"
 server:
   port: ":8866"
+
 

@@ -7,13 +7,13 @@ import (
 )
 
 type Comment struct {
-	CommentId  int64  `json:"comment_id"`
-	UserId     int64  `json:"user_id"`
-	VideoId    int64  `json:"video_id"`
-	Content    string `json:"content"`
-	CreateTime int64  `json:"create_time" gorm:"autoCreateTime"`
-	ModifyTime int64  `json:"modify_time" gorm:"autoUpdateTime"`
-	DeleteTime int64  `json:"delete_time"`
+	CommentId  int64  `json:"comment_id" gorm:"primaryKey; bigint unsigned; not null"`
+	UserId     int64  `json:"user_id" gorm:"bigint unsigned; not null"`
+	VideoId    int64  `json:"video_id" gorm:"bigint unsigned; not null"`
+	Content    string `json:"content" gorm:"varchar(511); not null; default:''"`
+	CreateTime int64  `json:"create_time" gorm:"autoCreateTime; not null"`
+	ModifyTime int64  `json:"modify_time" gorm:"autoUpdateTime; not null"`
+	DeleteTime int64  `json:"delete_time" gorm:"bigint unsigned; not null"`
 }
 
 type ICommentRepository interface {
