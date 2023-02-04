@@ -2,39 +2,28 @@ package util
 
 import (
 	"github.com/CCpro10/micro_douyin/conf"
-	"github.com/aliyun/aliyun-oss-go-sdk/oss"
-	"io"
-	"log"
+	"github.com/CCpro10/micro_douyin/util/storage"
+	"github.com/casdoor/oss"
 )
 
-type OSSClient struct {
-	bucket *oss.Bucket
+func GetStorageProvider(providerType string, clientId string, clientSecret string, region string, bucket string, endpoint string) oss.StorageInterface {
+	switch providerType {
+	case "Local File System":
+		return storage.NewLocalFileSystemStorageProvider()
+	case "Aliyun OSS":
+		return storage.NewAliyunOssStorageProvider(clientId, clientSecret, bucket, endpoint)
+	case "Azure Blob":
+		return storage.NewAzureBlobStorageProvider(clientId, clientSecret, region, bucket, endpoint)
+	}
+	return nil
 }
 
-var ossClient *OSSClient
+var ossClient oss.StorageInterface
 
-func GetOSSClient() *OSSClient {
+func GetOSSClient() oss.StorageInterface {
 	return ossClient
 }
 
 func InitOSSClient(conf *conf.Conf) {
-	client, err := oss.New(conf.Oss.Endpoint, conf.Oss.AccessKeyId, conf.Oss.AccessKeySecret)
-	if err != nil {
-		log.Panicln("oss.New Failed:", err)
-		return
-	}
-	bucket, err := client.Bucket(conf.Oss.BucketName)
-	if err != nil {
-		log.Panicln("client.Bucket() Failed:", err)
-		return
-	}
-	ossClient = &OSSClient{bucket: bucket}
-}
-
-func (c *OSSClient) UploadFileFromStream(objectName string, data io.Reader) error {
-	return c.bucket.PutObject(objectName, data)
-}
-
-func (c *OSSClient) UploadFileFromLocalFile(objectName string, filePath string) error {
-	return c.bucket.PutObjectFromFile(objectName, filePath)
+	ossClient = GetStorageProvider(conf.Oss.ProviderType, conf.Oss.AccessKeyId, conf.Oss.AccessKeySecret, "", conf.Oss.BucketName, conf.Oss.Endpoint)
 }

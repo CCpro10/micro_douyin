@@ -11,6 +11,8 @@ jwt:
   token_expire_duration: 240    #hour
   secret: "天王盖地虎"           #token服务端秘钥
 oss:
+  providerType: "Local File System"
+  region: ""
   endpoint: "oss-cn-hangzhou.aliyuncs.com"
   access_key_id: ""
   access_key_secret: ""

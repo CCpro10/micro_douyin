@@ -11,5 +11,6 @@ const (
 )
 
 func VideoPublish(objectName string, data io.Reader) error {
-	return util.GetOSSClient().UploadFileFromStream(objectName, data)
+	_, err := util.GetOSSClient().Put(objectName, data)
+	return err
 }
