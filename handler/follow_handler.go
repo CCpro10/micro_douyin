@@ -80,3 +80,22 @@ func GetFollowerListHandler(c *gin.Context) {
 		},
 	})
 }
+
+// GetFriendListHandler 好友就是 我的粉丝
+func GetFriendListHandler(c *gin.Context) {
+	//获取从JWTMiddleware解析好的userId
+	userId, err := middleware.GetUserId(c)
+	if err != nil {
+		log.Println(err)
+		util.MakeResponse(c, &util.HttpResponse{
+			StatusCode: util.InternalServerError,
+		})
+		return
+	}
+	util.MakeResponse(c, &util.HttpResponse{
+		StatusCode: util.Success,
+		ReturnVal: map[string]interface{}{
+			"user_list": service.GetFollowerList(c, userId),
+		},
+	})
+}

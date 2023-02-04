@@ -1,7 +1,6 @@
 package domain
 
 import (
-	"context"
 	"github.com/CCpro10/micro_douyin/repository"
 )
 
@@ -12,22 +11,24 @@ type UserInfo struct {
 	FollowCount   int64  `json:"follow_count"`
 	FollowerCount int64  `json:"follower_count"`
 	IsFollow      bool   `json:"is_follow"`
+	Avatar        string `json:"avatar"`
 }
 
 // FillUserInfo 将user对象转换为UserInfo对象
-func FillUserInfo(user *repository.User) *UserInfo {
+func FillUserInfo(user *repository.User, isFollow bool) *UserInfo {
 	userInfo := &UserInfo{
 		Id:            user.UserId,
 		Name:          user.Username,
 		FollowCount:   user.FollowCount,
 		FollowerCount: user.FollowerCount,
-		IsFollow:      true,
+		IsFollow:      isFollow,
+		Avatar:        user.Avatar,
 	}
 	return userInfo
 }
 
-// GetToUserIdsFromFollowList 从返回的follow对象中，获得关注id列表
-func GetToUserIdsFromFollowList(followList []*repository.Follow) []int64 {
+// GetToUserIds 从返回的follow对象中，获得关注id列表
+func GetToUserIds(followList []*repository.Follow) []int64 {
 	ids := make([]int64, len(followList))
 	for i := range followList {
 		ids[i] = followList[i].ToUserId
@@ -35,25 +36,11 @@ func GetToUserIdsFromFollowList(followList []*repository.Follow) []int64 {
 	return ids
 }
 
-// GetFromUserIdsFromFollowList 从返回的follow对象中，获得粉丝id列表
-func GetFromUserIdsFromFollowList(followList []*repository.Follow) []int64 {
+// GetFromUserIds 从返回的follow对象中，获得粉丝id列表
+func GetFromUserIds(followList []*repository.Follow) []int64 {
 	ids := make([]int64, len(followList))
 	for i := range followList {
 		ids[i] = followList[i].FromUserId
 	}
 	return ids
-}
-
-// GetUserInfosFromIds 根据获得的id列表去User表中查询
-func GetUserInfosFromIds(ctx context.Context, userIds []int64) ([]*UserInfo, error) {
-	// 根据id列表去查询users列表
-	users, err := repository.GetUserRepository().FindByUserIds(ctx, userIds)
-	if err != nil {
-		return nil, err
-	}
-	userInfos := make([]*UserInfo, len(userIds))
-	for i := range users {
-		userInfos[i] = FillUserInfo(users[i])
-	}
-	return userInfos, nil
 }
