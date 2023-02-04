@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/CCpro10/micro_douyin/domain"
 	"github.com/CCpro10/micro_douyin/repository"
 	"github.com/CCpro10/micro_douyin/util"
 	"github.com/gin-gonic/gin"
@@ -69,4 +70,26 @@ func Login(c *gin.Context, username string, password string) (userId int64, toke
 		return
 	}
 	return user.UserId, token, nil
+}
+
+// GetUserInfosByIds 根据获得的id列表去User表中查询
+func GetUserInfosByIds(ctx *gin.Context, userIds []int64, userId int64, userType string) ([]*domain.UserInfo, error) {
+	// 根据id列表去查询users列表
+	users, err := repository.GetUserRepository().FindByUserIds(ctx, userIds)
+	if err != nil {
+		return nil, err
+	}
+
+	userInfos := make([]*domain.UserInfo, len(userIds))
+	for i, user := range users {
+		// 如果是关注列表， 就是已经关注. 粉丝是关注这个 user 的人，但是 user 不一定已经关注了粉丝,需要判断
+		isFollow := true
+		if userType == Follower {
+			isFollow = IsFollowed(ctx, user.UserId, userId)
+		}
+
+		userInfos[i] = domain.FillUserInfo(user, isFollow)
+	}
+
+	return userInfos, nil
 }

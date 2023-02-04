@@ -2,7 +2,7 @@ package util
 
 import (
 	"github.com/CCpro10/micro_douyin/conf"
-	"github.com/CCpro10/micro_douyin/util/storage"
+	"github.com/CCpro10/micro_douyin/storage"
 	"github.com/casdoor/oss"
 )
 

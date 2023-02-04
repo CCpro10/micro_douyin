@@ -14,6 +14,7 @@ type User struct {
 	CreateTime    int64  `json:"create_time" gorm:"autoCreateTime; not null"`
 	ModifyTime    int64  `json:"modify_time" gorm:"autoUpdateTime; not null"`
 	DeleteTime    int64  `json:"delete_time" gorm:"bigint unsigned; not null"`
+	Avatar        string `json:"avatar" gorm:"varchar(100); not null; default: ''"`
 }
 
 type IUserRepository interface {

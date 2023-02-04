@@ -3,17 +3,20 @@ package service
 import (
 	"context"
 	"errors"
+	"log"
+
 	"github.com/CCpro10/micro_douyin/domain"
 	"github.com/CCpro10/micro_douyin/repository"
 	"github.com/CCpro10/micro_douyin/util"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
-	"log"
 )
 
 const (
-	FollowAction   = "1" // 1-关注
-	UnFollowAction = "2" // 2-取消关注
+	FollowAction   = "1"         // 1-关注
+	UnFollowAction = "2"         // 2-取消关注
+	Following      = "following" // 关注
+	Follower       = "follower"  // 粉丝
 )
 
 func RelationAction(c *gin.Context, userId int64, toUserId int64, actionType string) error {
@@ -53,7 +56,7 @@ func Follow(ctx context.Context, userId, toUserId int64) error {
 }
 
 // UnFollow 取消关注
-func UnFollow(ctx context.Context, userId, toUserId int64) error {
+func UnFollow(ctx *gin.Context, userId, toUserId int64) error {
 	// error为空表示已查询到对应记录，继续取消关注逻辑，其余错误均返回
 	err := repository.GetFollowRepository().FindByUserId(ctx, userId, toUserId)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -77,34 +80,46 @@ func UnFollow(ctx context.Context, userId, toUserId int64) error {
 	return nil
 }
 
+func IsFollowed(ctx *gin.Context, userId, toUserId int64) bool {
+	err := repository.GetFollowRepository().FindByUserId(ctx, userId, toUserId)
+	if err == nil {
+		return false
+	} else {
+		return true
+	}
+}
+
 // GetFollowList 获得关注列表
-func GetFollowList(ctx context.Context, userId int64) []*domain.UserInfo {
+func GetFollowList(ctx *gin.Context, userId int64) []*domain.UserInfo {
 	followList, err := repository.GetFollowRepository().FindByFromUserId(ctx, userId)
 	if err != nil {
 		log.Println("FindByFromUserId Failed", err)
 		return nil
 	}
-	userIds := domain.GetToUserIdsFromFollowList(followList)
-	userList, err := domain.GetUserInfosFromIds(ctx, userIds)
+
+	userIds := domain.GetToUserIds(followList)
+	userList, err := GetUserInfosByIds(ctx, userIds, userId, Following)
 	if err != nil {
-		log.Println("GetUserInfosFromIds Failed", err)
+		log.Println("GetUserInfosByIds Failed", err)
 		return nil
 	}
 	return userList
 }
 
 // GetFollowerList 获得粉丝列表
-func GetFollowerList(ctx context.Context, userId int64) []*domain.UserInfo {
+func GetFollowerList(ctx *gin.Context, userId int64) []*domain.UserInfo {
 	followList, err := repository.GetFollowRepository().FindByToUserId(ctx, userId)
 	if err != nil {
 		log.Println("FindByToUserId Failed", err)
 		return nil
 	}
-	userIds := domain.GetFromUserIdsFromFollowList(followList)
-	userList, err := domain.GetUserInfosFromIds(ctx, userIds)
+
+	userIds := domain.GetFromUserIds(followList)
+	userList, err := GetUserInfosByIds(ctx, userIds, userId, Follower)
 	if err != nil {
-		log.Println("GetUserInfosFromIds Failed", err)
+		log.Println("GetUserInfosByIds Failed", err)
 		return nil
 	}
+
 	return userList
 }
