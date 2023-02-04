@@ -34,6 +34,8 @@ type Conf struct {
 		Port string `yaml:"port"`
 	}
 	Oss struct {
+		Region          string `yaml:"region"`
+		ProviderType    string `yaml:"providerType"`
 		Endpoint        string `yaml:"endpoint"`
 		AccessKeyId     string `yaml:"access_key_id"`
 		AccessKeySecret string `yaml:"access_key_secret"`
